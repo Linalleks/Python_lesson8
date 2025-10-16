@@ -3,6 +3,7 @@ import requests
 from decouple import config
 from geopy import distance
 import folium
+import logging
 
 
 def fetch_coordinates(apikey, address):
@@ -38,16 +39,20 @@ def main():
         user_address = input('Где вы находитесь? ')
 
         if user_address == '':
-            print('Вы ничего не ввели, попробуйте ещё раз.')
+            logging.error('Получено пустое значение user_address')
             continue
 
         user_coordinates = fetch_coordinates(apikey, user_address)
 
         if user_coordinates is None:
-            print('Указанное место не найдено, попробуйте ещё раз.')
+            logging.error('Получено пустое значение user_coordinates '
+                          + 'при выполнении функции fetch_coordinates '
+                          + f'с параметром user_address = "{user_address}"')
             continue
         else:
-            print(f'Ваши координаты: {user_coordinates}')
+            logging.basicConfig(level=logging.INFO)
+            logging.info(f'Для user_address = "{user_address}" получены '
+                         + f'user_coordinates = "{user_coordinates}"')
             break
 
     ext_coffeehouses = []
